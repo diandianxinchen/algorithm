@@ -324,3 +324,54 @@ class Solution {
 }
 ```
 
+#### leetcode - 72 编辑距离
+给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。
+
+你可以对一个单词进行如下三种操作：
+
+插入一个字符
+删除一个字符
+替换一个字符
+
+定义dp[i][j]表示word1的前i个字符和word2的前j个字符相等需要进行的操作数  
+- 当 word1[i] = word2[j]时，不需要做操作  dp[i][j] = dp[i - 1][j - 1]
+- 插入操作 dp[i][j] = dp[i][j-1] + 1
+- 删除操作 dp[i][j] = dp[i-1][j] + 1
+- 替换操作 dp[i][j] = dp[i-1][j-1] + 1
+
+```
+class Solution {
+   public int minDistance(String word1, String word2) {
+        int n = word1.length();
+        int m = word2.length();
+
+        if (n * m == 0) {
+            return n + m;
+        }
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= m; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int insert = dp[i][j - 1] + 1;
+                int delete = dp[i - 1][j] + 1;
+                int replace = dp[i - 1][j - 1];
+                if (word1.charAt(i - 1) != word2.charAt(j - 1)) {
+                    replace = replace + 1;
+                }
+                dp[i][j] = Math.min(insert, Math.min(delete, replace));
+            }
+        }
+        return dp[n][m];
+    }
+}
+```
+
+动态规划解法的关键点
+- 状态的定义dp[i][j]... 表示是什么
+- 状态转移方程
+- 初始值的设置
